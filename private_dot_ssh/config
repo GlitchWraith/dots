@@ -1,0 +1,64 @@
+Host Atlantis.Core.GhostLink.net
+	User Atlantis-Local
+	Port 22
+	IdentityFile $HOME/.ssh/id_rsa 
+Host Atlantis.Core
+	Hostname 10.100.2.1
+	User ServiceLink
+	Port 22
+	IdentityFile  ~/.ssh/WebApplications
+HOST ShellLink
+	Hostname ShellLink.ghostlink.net
+	User GhostShell
+	Port 22
+	IdentityFile ~/.ssh/WebApplications
+HOST *.dev.ghostlink.net
+	StrictHostKeyChecking no
+	UserKnownHostsFile /dev/null
+HOST gmod-dev
+	Hostname gmod-dev.ghostlink.net	
+	User root
+	IdentityFile ~/.ssh/WebApplications 
+HOST Docker
+        Hostname Builder.Dev.ghostlink.net
+        User root
+        IdentityFile ~/.ssh/Terraform
+HOST test.dev.ghostlink.net
+	Hostname test.dev.ghostlink.net
+	user root
+	IdentityFile ~/.ssh/WebApplications
+
+HOST Craft.ghostlink.net
+	Hostname Craft.ghostlink.net
+	user root
+	IdentityFile ~/.ssh/WebApplications
+
+HOST Ext-Alien
+	Hostname Link0.ghostlink.net
+	User local
+	Port 55759
+	IdentityFile ~/.ssh/id_rsa
+	ForwardX11 yes
+
+HOST Ext-Reality
+	Hostname 10.1.1.40
+	User local
+	Port 22
+	IdentityFile ~/.ssh/id_rsa
+	ProxyJump Ext-Alien 
+HOST TESTED
+	Hostname 192.168.1.193
+	User local
+	Port 22
+	IdentityFile ~/.ssh/id_rsa
+HOST TestRSA
+	Hostname ShellLink.ghostlink.net
+	User Test
+	Port 22
+	IdentityFile ~/.ssh/UnipartDigital-rsa4096
+HOST fluffy 
+        HOSTNAME fluffy.unipart.io
+        PORT 22
+        USER hbaxter
+        IDENTITYFILE ~/.ssh/Unipart-ed25519
+

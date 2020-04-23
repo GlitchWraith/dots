@@ -1,0 +1,192 @@
+# Created by newuser for 5.7.1
+source $(dirname $(gem which colorls))/tab_complete.sh
+# Set up the prompt
+
+autoload -Uz promptinit
+promptinit
+prompt adam1
+
+setopt histignorealldups sharehistory
+
+# Use emacs keybindings even if our EDITOR is set to vi
+bindkey -e
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+
+# Use modern completion system
+autoload -Uz compinit
+compinit
+
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+export EDITOR=vim
+export PATH=$PATH:/opt/gitkraken:$HOME/go/bin:$HOME/Scripts:$HOME/bin
+#export GREP_OPTIONS=' — color=auto'
+export TF_VAR_DIGITALOCEAN_TOKEN="{{ (bitwarden "item" "api-key-do").login.password }}"
+export TF_VAR_pub_key="$HOME/.ssh/Terraform.pub"
+export TF_VAR_pvt_key="$HOME/.ssh/Terraform"
+export TF_VAR_do_token=$TF_VAR_DIGITALOCEAN_TOKEN
+export TF_VAR_sshPublic="$HOME/.ssh/Terraform.pub"
+export TF_VAR_sshPrivate="$HOME/.ssh/Terraform"
+export TF_VAR_sshPrivateService="$HOME/.ssh/WebApplications"
+
+export steamAPIKey="{{ (bitwarden "item" "api-key-do").login.password }}"
+alias vi="vim"
+alias packer="$HOME/Scripts/packer"
+alias cd..=" cd .."
+alias cd...=" cd ../../"
+alias ls=" ls --color "
+alias free="free -h"
+alias top="htop"
+alias checkvfio="dmesg | egrep -i  \"AMD|NVIDIA|vfio|nouveau\""
+alias biosgrubupdate="sudo grub2-mkconfig -o /boot/grub2/grub.cfg"
+alias ufiGrubUpdate="sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg"
+alias mkdir="mkdir -pv"
+alias rebuild="$HOME/Scripts/Rebuildwithvfio.sh"
+alias rvi="sudoedit"
+alias vir="sudoedit"
+alias echo="echo -e"
+alias copy="rsync -ahv --progress"
+alias cls="colorls"
+alias minecraft="screen -d -m ./Documents/minecraft-launcher/minecraft-launcher"
+DockerCloudBuild(){
+
+        currentdir=pwd
+        cd $HOME/GitHub/HomeLab-R2/Terraform/DockerCloudBuilder/
+        ./Build.sh
+        cd $currentdir
+        ssh Docker
+}
+
+bonsineo(){
+$HOME/Scripts/Tree.sh -n -L 20 -g 35,20 > /tmp/Art.txt
+neofetch --ascii /tmp/Art.txt --ascii_colors 11 3 10 2 7
+rm -f /tmp/Art.txt
+
+}
+# appropreated
+# Finds out diskspace taken up
+alias diskspace="du -S | sort -n -r |more"
+
+# Show me the size (sorted) of only the folders in this directory
+alias folders="find . -maxdepth 1 -type d -print | xargs du -sk | sort -rn"
+
+#best thing ever
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+# go's up directory tree x amount
+up(){
+  local d=""
+  limit=$1
+  for ((i=1 ; i <= limit ; i++))
+    do
+      d=$d/..
+    done
+  d=$(echo $d | sed 's/^\///')
+  if [ -z "$d" ]; then
+    d=..
+  fi
+  cd $d
+}
+
+
+# create a zkbd compatible hash;
+# to add other keys to this hash, see: man 5 terminfo
+typeset -g -A key
+
+key[Home]="${terminfo[khome]}"
+key[End]="${terminfo[kend]}"
+key[Insert]="${terminfo[kich1]}"
+key[Backspace]="${terminfo[kbs]}"
+key[Delete]="${terminfo[kdch1]}"
+key[Up]="${terminfo[kcuu1]}"
+key[Down]="${terminfo[kcud1]}"
+key[Left]="${terminfo[kcub1]}"
+key[Right]="${terminfo[kcuf1]}"
+key[PageUp]="${terminfo[kpp]}"
+key[PageDown]="${terminfo[knp]}"
+key[ShiftTab]="${terminfo[kcbt]}"
+
+# setup key accordingly
+[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"      beginning-of-line
+[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"       end-of-line
+[[ -n "${key[Insert]}"    ]] && bindkey -- "${key[Insert]}"    overwrite-mode
+[[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}" backward-delete-char
+[[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"    delete-char
+[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"        up-line-or-history
+[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"      down-line-or-history
+[[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"      backward-char
+[[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"     forward-char
+[[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"    beginning-of-buffer-or-history
+[[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"  end-of-buffer-or-history
+[[ -n "${key[ShiftTab]}"  ]] && bindkey -- "${key[ShiftTab]}"  reverse-menu-complete
+
+# Finally, make sure the terminal is in application mode, when zle is
+# active. Only then are the values from $terminfo valid.
+if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
+        autoload -Uz add-zle-hook-widget
+        function zle_application_mode_start {
+                echoti smkx
+        }
+        function zle_application_mode_stop {
+                echoti rmkx
+        }
+        add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
+        add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
+fi
+
+# History
+#
+
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+[[ -n "${key[Up]}"   ]] && bindkey -- "${key[Up]}"   up-line-or-beginning-search
+[[ -n "${key[Down]}" ]] && bindkey -- "${key[Down]}" down-line-or-beginning-search
+# Word Scipping
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+
