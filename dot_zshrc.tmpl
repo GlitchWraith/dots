@@ -1,5 +1,4 @@
 # Created by newuser for 5.7.1
-source $(dirname $(gem which colorls))/tab_complete.sh
 # Set up the prompt
 
 autoload -Uz promptinit
@@ -12,10 +11,16 @@ setopt histignorealldups sharehistory
 bindkey -e
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=99999
+HISTFILESIZE=999999
+SAVEHIST=$HISTSIZE
+#INC_APPEND_HISTORY
+#HISTTIMEFORMAT="[%F %T] "
+#setopt extended_history
 HISTFILE=~/.zsh_history
-
+setopt    appendhistory     #Append history to the history file (no overwriting)
+setopt    sharehistory      #Share history across terminals
+setopt    incappendhistory  #Immediately append to the history file, not just when a term is killed
 # Use modern completion system
 autoload -Uz compinit
 compinit
@@ -52,10 +57,10 @@ export TF_VAR_do_token=$TF_VAR_DIGITALOCEAN_TOKEN
 export TF_VAR_sshPublic="$HOME/.ssh/Terraform.pub"
 export TF_VAR_sshPrivate="$HOME/.ssh/Terraform"
 export TF_VAR_sshPrivateService="$HOME/.ssh/WebApplications"
+export PACKER_PVE="{{ (bitwarden "item" "Packer@pve").login.password }}"
 
 export steamAPIKey="{{ (bitwarden "item" "api-key-do").login.password }}"
 alias vi="vim"
-alias packer="$HOME/Scripts/packer"
 alias cd..=" cd .."
 alias cd...=" cd ../../"
 alias ls=" ls --color "
@@ -74,7 +79,7 @@ alias cls="colorls"
 alias minecraft="screen -d -m ./Documents/minecraft-launcher/minecraft-launcher"
 DockerCloudBuild(){
 
-        currentdir=pwd
+        currentdir=$(pwd)
         cd $HOME/GitHub/HomeLab-R2/Terraform/DockerCloudBuilder/
         ./Build.sh
         cd $currentdir
